@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppSampleSearchParamsRouteImport } from './routes/_app/_sample/search-params'
+import { Route as AppSampleQueryRouteImport } from './routes/_app/_sample/query'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -21,24 +23,45 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSampleSearchParamsRoute = AppSampleSearchParamsRouteImport.update({
+  id: '/_sample/search-params',
+  path: '/search-params',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSampleQueryRoute = AppSampleQueryRouteImport.update({
+  id: '/_sample/query',
+  path: '/query',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/query': typeof AppSampleQueryRoute
+  '/search-params': typeof AppSampleSearchParamsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof AppIndexRoute
+  '/query': typeof AppSampleQueryRoute
+  '/search-params': typeof AppSampleSearchParamsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
   '/_app/': typeof AppIndexRoute
+  '/_app/_sample/query': typeof AppSampleQueryRoute
+  '/_app/_sample/search-params': typeof AppSampleSearchParamsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/query' | '/search-params'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/_app' | '/_app/'
+  to: '/' | '/query' | '/search-params'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/'
+    | '/_app/_sample/query'
+    | '/_app/_sample/search-params'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -61,15 +84,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/_sample/search-params': {
+      id: '/_app/_sample/search-params'
+      path: '/search-params'
+      fullPath: '/search-params'
+      preLoaderRoute: typeof AppSampleSearchParamsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/_sample/query': {
+      id: '/_app/_sample/query'
+      path: '/query'
+      fullPath: '/query'
+      preLoaderRoute: typeof AppSampleQueryRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppSampleQueryRoute: typeof AppSampleQueryRoute
+  AppSampleSearchParamsRoute: typeof AppSampleSearchParamsRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppSampleQueryRoute: AppSampleQueryRoute,
+  AppSampleSearchParamsRoute: AppSampleSearchParamsRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)

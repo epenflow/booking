@@ -94,17 +94,16 @@ function Layout() {
                     )}>
                     <For each={contents}>
                       {(content, subKey) => (
-                        <div key={subKey}>
-                          <h1
-                            className={cn(
-                              "text-primary",
-                              content.href
-                                ? "paragraph"
-                                : "heading-4 mb-2 md:mb-4",
-                            )}>
-                            {content.label}
-                          </h1>
-                        </div>
+                        <h1
+                          key={subKey}
+                          className={cn(
+                            "text-primary",
+                            content.href
+                              ? "paragraph"
+                              : "heading-4 mb-2 md:mb-4",
+                          )}>
+                          {content.label}
+                        </h1>
                       )}
                     </For>
                   </div>

@@ -38,9 +38,7 @@ describe("utils component", () => {
     });
 
     it("tidak merender apapun saat 'each' adalah array kosong", () => {
-      const { container } = render(
-        <For each={undefined}>{() => <div></div>}</For>,
-      );
+      const { container } = render(<For each={[]}>{() => <div></div>}</For>);
 
       expect(container).toBeEmptyDOMElement();
     });

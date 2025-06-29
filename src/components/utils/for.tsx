@@ -1,7 +1,7 @@
 import { useMemo, type ReactNode } from "react";
 
 type ForProps<T> = {
-  each?: Array<T>;
+  each?: Array<T> | null;
   children?: (value: T, index: number) => ReactNode;
 };
 export default function For<T>({ each, children }: ForProps<T>) {

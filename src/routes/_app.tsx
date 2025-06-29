@@ -1,4 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Globe } from "lucide-react";
 import For from "~/components/utils/for";
 import { cn } from "~/lib/utils";
 
@@ -35,7 +36,7 @@ function Layout() {
         </div>
       </div>
 
-      <footer className="before:pattern-dot relative h-auto border-t border-dashed before:absolute before:top-0 before:left-0 before:h-full before:w-full">
+      <footer className="before:pattern-dot relative h-auto border-t border-dashed before:pointer-events-none before:absolute before:top-0 before:left-0 before:-z-10 before:h-full before:w-full">
         <div className="bg-card relative z-10 container border-x">
           <div className="relative grid grid-cols-12 border-x border-dashed">
             <div className="bg-border absolute -top-1 -left-1 size-2 rotate-45" />
@@ -81,10 +82,26 @@ function Layout() {
           </div>
         </div>
 
-        <div className="bg-background relative flex h-full w-full items-center justify-center border-t">
-          <h1 className="text-paragraph my-0 py-2 text-center">
-            Acme.Inc©{new Date().getFullYear()}
-          </h1>
+        <div className="bg-background border-t">
+          <div className="container grid h-full w-full grid-cols-2 grid-rows-2">
+            <div className="col-span-2 row-span-1 row-start-2 flex items-center gap-2 md:col-span-1 md:row-span-2">
+              <h1 className="text-primary my-0 py-2 text-start text-sm font-medium">
+                ©&nbsp;{new Date().getFullYear()}&nbsp;Acme, Inc.
+              </h1>
+              <ul className="text-primary/80 flex gap-2 text-sm font-medium">
+                <li>Privacy</li>
+                <li>Terms</li>
+                <li>Sitemap</li>
+              </ul>
+            </div>
+
+            <div className="col-span-2 row-span-1 row-start-1 flex items-center justify-start text-sm font-medium md:col-span-1 md:row-span-2 md:justify-end">
+              <h1 className="text-primary inline-flex items-center justify-center gap-2 [&_>svg]:size-4">
+                <Globe />
+                English (US)
+              </h1>
+            </div>
+          </div>
         </div>
       </footer>
     </>

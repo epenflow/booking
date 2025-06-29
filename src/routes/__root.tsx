@@ -37,9 +37,9 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
 
   component: () => (
     <RootLayout>
-      <Outlet />
       {import.meta.env.DEV ? (
-        <>
+        <StrictMode>
+          <Outlet />
           <LazyLoad
             buttonPosition="bottom-right"
             loader={() =>
@@ -58,8 +58,10 @@ export const Route = createRootRouteWithContext<RootRouteContext>()({
               )
             }
           />
-        </>
-      ) : null}
+        </StrictMode>
+      ) : (
+        <Outlet />
+      )}
     </RootLayout>
   ),
   notFoundComponent: () => (
@@ -78,7 +80,7 @@ function RootLayout({ children }: PropsWithChildren) {
         <HeadContent />
       </head>
       <body>
-        {import.meta.env.DEV ? <StrictMode>{children}</StrictMode> : children}
+        {children}
         <Scripts />
       </body>
     </html>

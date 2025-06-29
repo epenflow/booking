@@ -132,23 +132,23 @@
   }
 }
 
-@utility text-heading-1 {
+@utility heading-1 {
   @apply scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance;
 }
 
-@utility text-heading-2 {
+@utility heading-2 {
   @apply scroll-m-20 pb-2 text-3xl font-semibold tracking-tight first:mt-0;
 }
 
-@utility text-heading-3 {
+@utility heading-3 {
   @apply scroll-m-20 text-2xl font-semibold tracking-tight;
 }
 
-@utility text-heading-4 {
+@utility heading-4 {
   @apply scroll-m-20 text-xl font-semibold tracking-tight;
 }
-@utility text-paragraph {
-  @apply text-primary text-base leading-normal antialiased;
+@utility paragraph {
+  @apply leading-7 [&:not(:first-child)]:mt-6;
 }
 
 @utility pattern-diagonal {

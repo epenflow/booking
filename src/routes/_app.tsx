@@ -38,7 +38,7 @@ function Layout() {
 
       <div className="w-full border-b py-2">
         <h1 className="paragraph text-primary container text-center">
-          {t("Notification Label")}
+          {t("notification_label")}
         </h1>
       </div>
 

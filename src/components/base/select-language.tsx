@@ -32,7 +32,7 @@ export default function SelectLanguage() {
       return `${name} (${code.toUpperCase()})`;
     }
 
-    return t("Select Language Value");
+    return t("select_lng_value");
   }, [t, i18n]);
 
   return (
@@ -45,7 +45,7 @@ export default function SelectLanguage() {
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>{t("Select Language Label")}</SelectLabel>
+          <SelectLabel>{t("ns1:select_lng_label")}</SelectLabel>
           <For each={Object.entries(LANGUAGES)}>
             {([code, name], key) => (
               <SelectItem key={key} value={code}>

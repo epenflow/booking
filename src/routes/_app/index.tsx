@@ -20,9 +20,19 @@ function Page() {
           <Link to="/search-params">Search Params</Link>
         </section>
         <section className="space-y-4">
-          <p>{t("Welcome Text")}</p>
-          <p>{t("Dummy Language")}</p>
           <SelectLanguage />
+          <div className="mx-auto max-w-xl text-pretty">
+            <h1 className="heading-4">{t("speech:title")}</h1>
+            <p className="paragraph">{t("speech:description.part1")}</p>
+            <p className="paragraph">{t("speech:description.part2")}</p>
+            <p className="paragraph">{t("speech:description.part3")}</p>
+            <p className="paragraph">{t("speech:description.part4")}</p>
+            <p className="paragraph">{t("speech:description.part5")}</p>
+            <p className="paragraph">{t("speech:description.part6")}</p>
+          </div>
+          <p>{t("ns1:welcome_text")}</p>
+          <p>{t("ns1:dummy_text")}</p>
+          <p>{t("dummy_text")}</p>
         </section>
       </article>
 

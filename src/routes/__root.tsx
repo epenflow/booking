@@ -9,6 +9,7 @@ import { StrictMode, type PropsWithChildren } from "react";
 
 import LazyLoad from "~/components/utils/lazy-load";
 import globalsCss from "~/globals.css?url";
+import "~/lib/i18n";
 
 type RootRouteContext = {
   queryClient: QueryClient;

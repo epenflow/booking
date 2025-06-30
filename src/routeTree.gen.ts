@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppSitemapRouteImport } from './routes/_app/sitemap'
 import { Route as AppSampleSearchParamsRouteImport } from './routes/_app/_sample/search-params'
 import { Route as AppSampleQueryRouteImport } from './routes/_app/_sample/query'
 
@@ -21,6 +22,11 @@ const AppRoute = AppRouteImport.update({
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSitemapRoute = AppSitemapRouteImport.update({
+  id: '/sitemap',
+  path: '/sitemap',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSampleSearchParamsRoute = AppSampleSearchParamsRouteImport.update({
@@ -35,11 +41,13 @@ const AppSampleQueryRoute = AppSampleQueryRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/sitemap': typeof AppSitemapRoute
   '/': typeof AppIndexRoute
   '/query': typeof AppSampleQueryRoute
   '/search-params': typeof AppSampleSearchParamsRoute
 }
 export interface FileRoutesByTo {
+  '/sitemap': typeof AppSitemapRoute
   '/': typeof AppIndexRoute
   '/query': typeof AppSampleQueryRoute
   '/search-params': typeof AppSampleSearchParamsRoute
@@ -47,18 +55,20 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/_app/sitemap': typeof AppSitemapRoute
   '/_app/': typeof AppIndexRoute
   '/_app/_sample/query': typeof AppSampleQueryRoute
   '/_app/_sample/search-params': typeof AppSampleSearchParamsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/query' | '/search-params'
+  fullPaths: '/sitemap' | '/' | '/query' | '/search-params'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/query' | '/search-params'
+  to: '/sitemap' | '/' | '/query' | '/search-params'
   id:
     | '__root__'
     | '/_app'
+    | '/_app/sitemap'
     | '/_app/'
     | '/_app/_sample/query'
     | '/_app/_sample/search-params'
@@ -84,6 +94,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/sitemap': {
+      id: '/_app/sitemap'
+      path: '/sitemap'
+      fullPath: '/sitemap'
+      preLoaderRoute: typeof AppSitemapRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/_sample/search-params': {
       id: '/_app/_sample/search-params'
       path: '/search-params'
@@ -102,12 +119,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppSitemapRoute: typeof AppSitemapRoute
   AppIndexRoute: typeof AppIndexRoute
   AppSampleQueryRoute: typeof AppSampleQueryRoute
   AppSampleSearchParamsRoute: typeof AppSampleSearchParamsRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppSitemapRoute: AppSitemapRoute,
   AppIndexRoute: AppIndexRoute,
   AppSampleQueryRoute: AppSampleQueryRoute,
   AppSampleSearchParamsRoute: AppSampleSearchParamsRoute,

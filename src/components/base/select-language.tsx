@@ -9,7 +9,7 @@ import {
   SelectLabel,
   SelectTrigger,
 } from "~/components/ui/select";
-import { LANGUAGES } from "~/lib/i18n/resources";
+import { LANGUAGES } from "~/lib/i18n";
 import For from "../utils/for";
 
 export default function SelectLanguage() {

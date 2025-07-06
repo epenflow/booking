@@ -1,0 +1,21 @@
+{
+  "name": "booking",
+  "version": "1.0.0",
+  "packageManager": "npm@10.9.2",
+  "scripts": {
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "build": "turbo run build",
+    "format": "prettier . --write",
+    "check:types": "tsc --noEmit"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "turbo": "^2.5.4",
+    "typescript": "^5.8.3"
+  }
+}

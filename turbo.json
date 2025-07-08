@@ -1,10 +1,12 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
+  "globalDependencies": [".env"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": ["STUDIO_PROJECT_ID", "STUDIO_DATASET"]
     },
     "check:types": {
       "dependsOn": ["^check:types"]
@@ -14,7 +16,8 @@
     },
     "dev": {
       "persistent": true,
-      "cache": false
+      "cache": false,
+      "env": ["STUDIO_PROJECT_ID", "STUDIO_DATASET"]
     }
   }
 }

@@ -1,7 +1,6 @@
 {
   "name": "booking",
-  "version": "1.0.0",
-  "packageManager": "npm@10.9.2",
+  "packageManager": "npm@11.4.2",
   "scripts": {
     "dev": "turbo run dev",
     "lint": "turbo run lint",
@@ -17,5 +16,8 @@
     "prettier": "^3.6.2",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }

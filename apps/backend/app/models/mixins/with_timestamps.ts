@@ -14,7 +14,7 @@ type WithTimestampsClass<
 export default function WithTimestamps<Model extends NormalizeConstructor<typeof BaseModel>>(
   superclass: Model
 ): WithTimestampsClass<Model> {
-  class WithTimestampsClass extends superclass {
+  class BaseClass extends superclass {
     @column.dateTime({ autoCreate: true })
     declare createdAt: DateTime
 
@@ -22,5 +22,5 @@ export default function WithTimestamps<Model extends NormalizeConstructor<typeof
     declare updatedAt: DateTime
   }
 
-  return WithTimestampsClass
+  return BaseClass
 }

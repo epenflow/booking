@@ -2,5 +2,13 @@
   "name": "@repo/eslint-config",
   "version": "1.0.0",
   "type": "module",
-  "private": "true"
+  "private": "true",
+  "exports": {
+    "./backend": "./backend.js"
+  },
+  "devDependencies": {
+    "@adonisjs/eslint-config": "^2.1.2",
+    "eslint": "^9.35.0",
+    "eslint-config-turbo": "^2.5.6"
+  }
 }

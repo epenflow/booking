@@ -13,6 +13,8 @@
   },
   "scripts": {
     "format": "prettier . --write",
-    "typecheck": "turbo run typecheck"
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "dev": "turbo run dev"
   }
 }

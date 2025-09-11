@@ -4,6 +4,15 @@
   "tasks": {
     "typecheck": {
       "dependsOn": ["^typecheck"]
+    },
+    "lint": {
+      "inputs": [".env", "env.example"],
+      "dependsOn": ["^lint"],
+      "env": ["DEV", "NODE_ENV"]
+    },
+    "dev": {
+      "cache": true,
+      "persistent": false
     }
   }
 }

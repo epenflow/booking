@@ -2,6 +2,7 @@ import app from '@adonisjs/core/services/app'
 import testUtils from '@adonisjs/core/services/test_utils'
 import { apiClient } from '@japa/api-client'
 import { assert } from '@japa/assert'
+import { expect } from '@japa/expect'
 import { expectTypeOf } from '@japa/expect-type'
 import { fileSystem } from '@japa/file-system'
 import { pluginAdonisJS } from '@japa/plugin-adonisjs'
@@ -21,6 +22,7 @@ export const plugins: Config['plugins'] = [
   pluginAdonisJS(app),
   expectTypeOf(),
   fileSystem(),
+  expect(),
 ]
 
 /**

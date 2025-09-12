@@ -50,9 +50,11 @@ export async function createTable(db: Database) {
 
   const tableNames = {
     user: 'users',
+    token: 'tokens',
   } as const
 
   test.cleanup(async () => {
+    await db.connection().schema.dropTableIfExists(tableNames.token)
     await db.connection().schema.dropTableIfExists(tableNames.user)
   })
 
@@ -63,7 +65,21 @@ export async function createTable(db: Database) {
     table.text('password').notNullable()
     table.timestamp('email_verified_at').nullable()
     table.timestamp('password_last_changed_at').nullable()
-    table.timestamp('created_at')
-    table.timestamp('updated_at')
+    table.timestamps(true)
+  })
+
+  await db.connection().schema.createTableIfNotExists(tableNames.token, (table) => {
+    table.increments('id')
+    table
+      .integer('tokenable_id')
+      .notNullable()
+      .unsigned()
+      .references('id')
+      .inTable(tableNames.user)
+      .onDelete('CASCADE')
+    table.string('type').notNullable()
+    table.string('token').notNullable()
+    table.timestamp('expires_at').notNullable()
+    table.timestamps(true)
   })
 }

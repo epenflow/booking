@@ -4,11 +4,7 @@ import { NormalizeConstructor } from '@adonisjs/core/types/helpers'
 import { BaseModel, beforeUpdate, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
-<<<<<<< HEAD
 type DbTokenTypeContract = 'email_verification' | 'reset_password'
-=======
-type TokenTypeContract = 'email_verification' | 'reset_password'
->>>>>>> 35578a97fc42452f5a6a1f31f358d34e08306062
 type WithUserCredentialsClass<
   Model extends NormalizeConstructor<typeof BaseModel> = NormalizeConstructor<typeof BaseModel>,
 > = Model & {
@@ -19,17 +15,12 @@ type WithUserCredentialsClass<
     emailVerifiedAt: DateTime | null
     passwordLastChangedAt: DateTime | null
   }
-<<<<<<< HEAD
   tokens: DbTokensProvider<Model, DbTokenTypeContract>
-=======
-  tokens: DbTokensProvider<Model, TokenTypeContract>
->>>>>>> 35578a97fc42452f5a6a1f31f358d34e08306062
   accessTokens: DbAccessTokensProvider<Model>
   currentAccessTokens?: AccessToken
   createResetPasswordToken<T extends WithUserCredentialsClass>(
     this: T,
     user: InstanceType<T>
-<<<<<<< HEAD
   ): Promise<NormalizeDbTokensColumn<DbTokenTypeContract>>
   createEmailVerificationToken<T extends WithUserCredentialsClass>(
     this: T,
@@ -39,17 +30,6 @@ type WithUserCredentialsClass<
     this: T,
     token: string,
     type: DbTokenTypeContract
-=======
-  ): Promise<NormalizeDbTokensColumn<TokenTypeContract>>
-  createEmailVerificationToken<T extends WithUserCredentialsClass>(
-    this: T,
-    user: InstanceType<T>
-  ): Promise<NormalizeDbTokensColumn<TokenTypeContract>>
-  verifyToken<T extends WithUserCredentialsClass>(
-    this: T,
-    token: string,
-    type: TokenTypeContract
->>>>>>> 35578a97fc42452f5a6a1f31f358d34e08306062
   ): Promise<InstanceType<T>>
   resetPassword<T extends WithUserCredentialsClass>(
     this: T,
@@ -101,22 +81,14 @@ export function WithUserCredentials<Model extends NormalizeConstructor<typeof Ba
        */
     }
 
-<<<<<<< HEAD
     static tokens = DbTokensProvider.forModel<DbTokenTypeContract, typeof BaseClass>(BaseClass)
-=======
-    static tokens = DbTokensProvider.forModel<TokenTypeContract, typeof BaseClass>(BaseClass)
->>>>>>> 35578a97fc42452f5a6a1f31f358d34e08306062
     static accessTokens = DbAccessTokensProvider.forModel<typeof BaseClass>(BaseClass)
     static currentAccessTokens?: AccessToken
 
     static async createResetPasswordToken<T extends WithUserCredentialsClass>(
       this: T,
       user: InstanceType<T>
-<<<<<<< HEAD
     ): Promise<NormalizeDbTokensColumn<DbTokenTypeContract>> {
-=======
-    ): Promise<NormalizeDbTokensColumn<TokenTypeContract>> {
->>>>>>> 35578a97fc42452f5a6a1f31f358d34e08306062
       await this.tokens.clear(user, 'reset_password')
       return this.tokens.create(user, 'reset_password')
     }
@@ -124,11 +96,7 @@ export function WithUserCredentials<Model extends NormalizeConstructor<typeof Ba
     static async createEmailVerificationToken<T extends WithUserCredentialsClass>(
       this: T,
       user: InstanceType<T>
-<<<<<<< HEAD
     ): Promise<NormalizeDbTokensColumn<DbTokenTypeContract>> {
-=======
-    ): Promise<NormalizeDbTokensColumn<TokenTypeContract>> {
->>>>>>> 35578a97fc42452f5a6a1f31f358d34e08306062
       await this.tokens.clear(user, 'email_verification')
       return this.tokens.create(user, 'email_verification')
     }
@@ -136,11 +104,7 @@ export function WithUserCredentials<Model extends NormalizeConstructor<typeof Ba
     static async verifyToken<T extends WithUserCredentialsClass>(
       this: T,
       token: string,
-<<<<<<< HEAD
       type: DbTokenTypeContract
-=======
-      type: TokenTypeContract
->>>>>>> 35578a97fc42452f5a6a1f31f358d34e08306062
     ): Promise<InstanceType<T>> {
       const data = await this.tokens.verify(token, type)
 

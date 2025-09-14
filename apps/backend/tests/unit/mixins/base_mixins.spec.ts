@@ -1,5 +1,5 @@
 import { IdentifierContract, WithIdentifier, WithTimestamps } from '#models/mixins/base'
-import { createDatabase, createTable } from '#tests/helpers'
+import { createDatabase, createUsersTable } from '#tests/helpers'
 import { compose } from '@adonisjs/core/helpers'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { test } from '@japa/runner'
@@ -26,9 +26,6 @@ test.group('Base Mixins', () => {
   test('should add both identifier and and timestamps properties to the model', async ({
     assert,
   }) => {
-    const db = await createDatabase()
-    await createTable(db)
-
     const user = await User.create(defaultUser)
 
     assert.properties(user.toJSON(), ['id', 'createdAt', 'updatedAt'])
@@ -36,7 +33,7 @@ test.group('Base Mixins', () => {
 
   test('should set correct data types for id and timestamps', async ({ expectTypeOf }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
 
     const user = await User.create(defaultUser)
 

@@ -1,6 +1,6 @@
 import { type IdentifierContract, WithIdentifier, WithTimestamps } from '#models/mixins/base'
 import DbTokensProvider, { NormalizeDbTokensColumn } from '#models/provider/db_tokens_provider'
-import { createDatabase, createTable } from '#tests/helpers'
+import { createDatabase, createDbTokensTable, createUsersTable } from '#tests/helpers'
 import { compose } from '@adonisjs/core/helpers'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { test } from '@japa/runner'
@@ -34,7 +34,8 @@ const defaultUser = {
 test.group('Db Tokens Provider', () => {
   test('create token for user', async ({ assert, expectTypeOf }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = await User.create(defaultUser)
 
@@ -48,7 +49,8 @@ test.group('Db Tokens Provider', () => {
 
   test('create token with a specific expiresIn', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const expiresIn = DateTime.now().plus({ hours: 2 })
     const user = await User.create(defaultUser)
@@ -62,19 +64,21 @@ test.group('Db Tokens Provider', () => {
 
   test('throw exception when creating token for un-persisted user', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = new User()
     user.username = 'newuser'
 
     await assert.rejects(async () => {
       await User.tokens.create(user, 'reset_password')
-    }, `Cannot user "User" model for managing tokens. The value of column "id" is undefined or null`)
+    }, `Cannot use "User" model for managing tokens. The value of column "id" is undefined or null`)
   })
 
   test('throw exception when creating token for invalid user object', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     await assert.rejects(async () => {
       await User.tokens.create({} as User, 'reset_password')
@@ -83,7 +87,8 @@ test.group('Db Tokens Provider', () => {
 
   test('verify token successfully', async ({ assert, expectTypeOf, expect }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = await User.create(defaultUser)
 
@@ -99,7 +104,8 @@ test.group('Db Tokens Provider', () => {
 
   test('verify return null for non-existent token', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const data = await User.tokens.verify('non_existent_token', 'email_verification')
     assert.isNull(data)
@@ -107,7 +113,8 @@ test.group('Db Tokens Provider', () => {
 
   test('verify identifies an expired token', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const provider = DbTokensProvider.forModel<DbTokenTypeContract, typeof User>(User, {
       table: 'tokens',
@@ -122,7 +129,8 @@ test.group('Db Tokens Provider', () => {
 
   test('find token by identifier and type', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = await User.create(defaultUser)
     const createdToken = await User.tokens.create(user, 'email_verification')
@@ -137,7 +145,8 @@ test.group('Db Tokens Provider', () => {
 
   test('find token without type constraint', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = await User.create(defaultUser)
     const createdToken = await User.tokens.create(user, 'email_verification')
@@ -150,7 +159,8 @@ test.group('Db Tokens Provider', () => {
 
   test('find returns null for non-existent token', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = await User.create(defaultUser)
     const foundToken = await User.tokens.find(user, 9999) // non-existent id
@@ -160,7 +170,8 @@ test.group('Db Tokens Provider', () => {
 
   test('delete token by identifier', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = await User.create(defaultUser)
     const createdToken = await User.tokens.create(user, 'reset_password')
@@ -174,7 +185,8 @@ test.group('Db Tokens Provider', () => {
 
   test('all returns tokens of a specific type', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = await User.create(defaultUser)
     await User.tokens.create(user, 'reset_password')
@@ -187,7 +199,8 @@ test.group('Db Tokens Provider', () => {
 
   test('clear all tokens for a user', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = await User.create(defaultUser)
     await User.tokens.create(user, 'reset_password')
@@ -202,7 +215,8 @@ test.group('Db Tokens Provider', () => {
 
   test('clear tokens of a specific type for a user', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = await User.create(defaultUser)
     await User.tokens.create(user, 'reset_password')
@@ -219,7 +233,8 @@ test.group('Db Tokens Provider', () => {
 
   test('invalidate token successfully', async ({ assert }) => {
     const db = await createDatabase()
-    await createTable(db)
+    await createUsersTable(db)
+    await createDbTokensTable(db)
 
     const user = await User.create(defaultUser)
     const createdToken = await User.tokens.create(user, 'reset_password')

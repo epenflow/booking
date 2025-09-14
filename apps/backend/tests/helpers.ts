@@ -45,41 +45,56 @@ export async function createDatabase() {
   return db
 }
 
-export async function createTable(db: Database) {
+export async function createDbTokensTable(
+  db: Database,
+  options?: {
+    tableName?: string
+    references?: string
+  }
+) {
   const test = getActiveTestOrFail()
-
-  const tableNames = {
-    user: 'users',
-    token: 'tokens',
-  } as const
+  const tableName = options?.tableName || 'tokens'
+  const references = options?.references || 'users.id'
 
   test.cleanup(async () => {
-    await db.connection().schema.dropTableIfExists(tableNames.token)
-    await db.connection().schema.dropTableIfExists(tableNames.user)
+    await db.connection().schema.dropTableIfExists(tableName)
   })
 
-  await db.connection().schema.createTableIfNotExists(tableNames.user, (table) => {
+  await db.connection().schema.createTableIfNotExists(tableName, (table) => {
+    table.increments('id')
+    table
+      .integer('tokenable_id')
+      .notNullable()
+      .unsigned()
+      .references(references)
+      .onDelete('CASCADE')
+    table.string('type').notNullable()
+    table.string('token').notNullable()
+    table.index(['type', 'token'])
+    table.timestamp('expires_at').notNullable()
+    table.timestamps(true)
+  })
+}
+export async function createUsersTable(
+  db: Database,
+  options?: {
+    tableName?: string
+  }
+) {
+  const test = getActiveTestOrFail()
+  const tableName = options?.tableName || 'users'
+
+  test.cleanup(async () => {
+    await db.connection().schema.dropTableIfExists(tableName)
+  })
+
+  await db.connection().schema.createTableIfNotExists(tableName, (table) => {
     table.increments('id')
     table.string('username').notNullable().unique()
     table.string('email').notNullable().unique()
     table.text('password').notNullable()
     table.timestamp('email_verified_at').nullable()
     table.timestamp('password_last_changed_at').nullable()
-    table.timestamps(true)
-  })
-
-  await db.connection().schema.createTableIfNotExists(tableNames.token, (table) => {
-    table.increments('id')
-    table
-      .integer('tokenable_id')
-      .notNullable()
-      .unsigned()
-      .references('id')
-      .inTable(tableNames.user)
-      .onDelete('CASCADE')
-    table.string('type').notNullable()
-    table.string('token').notNullable()
-    table.timestamp('expires_at').notNullable()
     table.timestamps(true)
   })
 }

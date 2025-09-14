@@ -26,6 +26,8 @@ test.group('Base Mixins', () => {
   test('should add both identifier and and timestamps properties to the model', async ({
     assert,
   }) => {
+    const db = await createDatabase()
+    await createUsersTable(db)
     const user = await User.create(defaultUser)
 
     assert.properties(user.toJSON(), ['id', 'createdAt', 'updatedAt'])

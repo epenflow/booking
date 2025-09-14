@@ -77,7 +77,7 @@ export default class DbTokensProvider<Model extends LucidModel, Type> {
 
     if (!user.$primaryKeyValue) {
       throw new RuntimeException(
-        `Cannot user "${model.name}" model for managing ${this.table}. The value of column "${model.primaryKey}" is undefined or null`
+        `Cannot use "${model.name}" model for managing ${this.table}. The value of column "${model.primaryKey}" is undefined or null`
       )
     }
   }

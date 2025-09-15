@@ -5,15 +5,23 @@ export default class extends BaseSchema {
   protected tableNames = {
     user: 'users',
     authAccessToken: 'auth_access_tokens',
+    dbTokensProvider: 'user_db_tokens_provider',
   }
 
   async up() {
     // create user table
     this.schema.createTable(this.tableNames.user, (table) => {
       table.increments('id').notNullable()
-      table.string('full_name').nullable()
-      table.string('email', 254).notNullable().unique()
-      table.string('password').notNullable()
+      table.string('first_name').nullable()
+      table.string('last_name').nullable()
+      table.json('avatar').nullable()
+      table.string('username').notNullable().unique()
+      table.string('email').notNullable().unique()
+      table.text('password').notNullable()
+      table.timestamp('dob').nullable()
+      table.timestamp('email_verified_at').nullable().defaultTo(null)
+      table.timestamp('password_last_changed_at').nullable().defaultTo(null)
+      table.timestamps(true)
     })
 
     // create auth access token table
@@ -33,26 +41,27 @@ export default class extends BaseSchema {
       table.text('abilities').notNullable()
       table.timestamp('last_used_at').nullable()
       table.timestamp('expires_at').nullable()
+      table.timestamps(true)
     })
 
-    // Create Timestamps column
-    Object.entries(this.tableNames).forEach(([, tableName]) => {
-      this.schema.alterTable(tableName, (table) => {
-        table.timestamp('created_at')
-        table.timestamp('updated_at')
-      })
+    this.schema.createTable(this.tableNames.dbTokensProvider, (table) => {
+      table.increments('id')
+      table
+        .integer('tokenable_id')
+        .notNullable()
+        .unsigned()
+        .references('id')
+        .inTable(this.tableNames.user)
+        .onDelete(this.cascade)
+      table.string('type').notNullable()
+      table.string('token').notNullable()
+      table.timestamp('expires_at').notNullable()
+      table.timestamps(true)
+      table.index(['type', 'token'])
     })
   }
 
   async down() {
-    // Drop Timestamps column
-    Object.entries(this.tableNames).forEach(([, tableName]) => {
-      this.schema.alterTable(tableName, (table) => {
-        table.dropColumn('created_at')
-        table.dropColumn('updated_at')
-      })
-    })
-
     // Drop tables
     Object.entries(this.tableNames)
       .reverse()

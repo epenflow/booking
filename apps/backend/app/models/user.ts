@@ -1,24 +1,33 @@
-import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { compose } from '@adonisjs/core/helpers'
 import hash from '@adonisjs/core/services/hash'
 import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { DateTime } from 'luxon'
 import { WithIdentifier, WithTimestamps } from './mixins/base.js'
+import { WithUserComputedProperties, WithUserCredentials } from './mixins/user.js'
 
-const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
+const WithAuthFinder = withAuthFinder(() => hash.use('scrypt'), {
   uids: ['email'],
   passwordColumnName: 'password',
 })
 
-export default class User extends compose(BaseModel, AuthFinder, WithIdentifier, WithTimestamps) {
+export default class User extends compose(
+  BaseModel,
+  WithIdentifier,
+  WithTimestamps,
+  WithUserCredentials,
+  WithUserComputedProperties,
+  WithAuthFinder
+) {
   @column()
-  declare fullName: string | null
+  declare firstName: string | null
 
   @column()
-  declare email: string
+  declare lastName: string | null
 
-  @column({ serializeAs: null })
-  declare password: string
+  @column()
+  declare avatar: string | null
 
-  static accessTokens = DbAccessTokensProvider.forModel(User)
+  @column.dateTime()
+  declare dob: DateTime | null
 }

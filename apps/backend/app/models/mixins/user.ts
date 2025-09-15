@@ -119,7 +119,7 @@ export function WithUserCredentials<Model extends NormalizeConstructor<typeof Ba
       const user = await this.verifyToken(token, 'reset_password')
 
       user.password = password
-      user.save()
+      await user.save()
 
       return user
     }
@@ -131,7 +131,7 @@ export function WithUserCredentials<Model extends NormalizeConstructor<typeof Ba
       const user = await this.verifyToken(token, 'email_verification')
 
       user.emailVerifiedAt = DateTime.now()
-      user.save()
+      await user.save()
 
       return user
     }

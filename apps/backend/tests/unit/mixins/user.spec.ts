@@ -6,7 +6,7 @@ import testUtils from '@adonisjs/core/services/test_utils'
 import { test } from '@japa/runner'
 import { DateTime } from 'luxon'
 
-test.group('Computed Properties mixins', (group) => {
+test.group('User computed props mixins', (group) => {
   group.setup(() => testUtils.db('test').migrate())
   group.each.setup(() => testUtils.db('test').truncate())
 

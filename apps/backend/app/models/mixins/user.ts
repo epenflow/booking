@@ -1,10 +1,11 @@
 import DbTokensProvider, { NormalizeDbTokensColumn } from '#models/provider/db_tokens_provider'
 import { AccessToken, DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
+import emitter from '@adonisjs/core/services/emitter'
 import { NormalizeConstructor } from '@adonisjs/core/types/helpers'
-import { BaseModel, beforeUpdate, column } from '@adonisjs/lucid/orm'
+import { BaseModel, beforeUpdate, column, computed } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
-type DbTokenTypeContract = 'email_verification' | 'reset_password'
+export type DbTokenTypeContract = 'email_verification' | 'reset_password'
 type WithUserCredentialsClass<
   Model extends NormalizeConstructor<typeof BaseModel> = NormalizeConstructor<typeof BaseModel>,
 > = Model & {
@@ -36,10 +37,9 @@ type WithUserCredentialsClass<
     token: string,
     password: string
   ): Promise<InstanceType<T>>
-  updatePasswordTimestamp<T extends WithUserCredentialsClass>(this: InstanceType<T>): void
   verifyEmail<T extends WithUserCredentialsClass>(this: T, token: string): Promise<InstanceType<T>>
-  updateEmailTimestamp<T extends WithUserCredentialsClass>(this: InstanceType<T>): void
 }
+
 export function WithUserCredentials<Model extends NormalizeConstructor<typeof BaseModel>>(
   superclass: Model
 ): WithUserCredentialsClass<Model> {
@@ -60,28 +60,24 @@ export function WithUserCredentials<Model extends NormalizeConstructor<typeof Ba
     declare passwordLastChangedAt: DateTime | null
 
     @beforeUpdate()
-    static updatePasswordTimestamp<T extends WithUserCredentialsClass>(
-      this: InstanceType<T>
-    ): void {
-      if (this.$dirty.password) {
-        this.passwordLastChangedAt = DateTime.now()
+    static async updatePasswordTimestamp(user: BaseClass): Promise<void> {
+      if (user.$dirty.password) {
+        user.passwordLastChangedAt = DateTime.now()
+        emitter.emit('user:credentials:password:change', user)
       }
-      /**
-       * Todo - Event password has changed
-       */
     }
 
     @beforeUpdate()
-    static updateEmailTimestamp<T extends WithUserCredentialsClass>(this: InstanceType<T>): void {
-      if (this.$dirty.email) {
-        this.emailVerifiedAt = null
+    static async updateEmailTimestamp(user: BaseClass): Promise<void> {
+      if (user.$dirty.email) {
+        user.emailVerifiedAt = null
+        emitter.emit('user:credentials:email:change', user)
       }
-      /**
-       * Todo - Event email has changed
-       */
     }
 
-    static tokens = DbTokensProvider.forModel<DbTokenTypeContract, typeof BaseClass>(BaseClass)
+    static tokens = DbTokensProvider.forModel<DbTokenTypeContract, typeof BaseClass>(BaseClass, {
+      table: 'user_db_tokens_provider',
+    })
     static accessTokens = DbAccessTokensProvider.forModel<typeof BaseClass>(BaseClass)
     static currentAccessTokens?: AccessToken
 
@@ -141,5 +137,68 @@ export function WithUserCredentials<Model extends NormalizeConstructor<typeof Ba
     }
   }
 
+  return BaseClass
+}
+
+declare module '@adonisjs/core/types' {
+  interface EventsList {
+    'user:credentials:email:change': InstanceType<WithUserCredentialsClass>
+    'user:credentials:password:change': InstanceType<WithUserCredentialsClass>
+  }
+}
+
+type WithUserComputedPropertiesClass<
+  Model extends NormalizeConstructor<typeof BaseModel> = NormalizeConstructor<typeof BaseModel>,
+> = Model & {
+  new (...args: any[]): {
+    fullName: string | null
+    initialName: string
+    age: number | null
+  }
+}
+export function WithUserComputedProperties<Model extends NormalizeConstructor<typeof BaseModel>>(
+  superclass: Model
+): WithUserComputedPropertiesClass<Model> {
+  class BaseClass extends superclass {
+    @computed()
+    get fullName(): string | null {
+      const firstName: string | null = (this as any)['firstName']
+      const lastName: string | null = (this as any)['lastName']
+
+      if (!firstName && !lastName) return null
+
+      const fullName = `${firstName || ''} ${lastName || ''}`.trim()
+
+      return fullName.length > 0 ? fullName : null
+    }
+
+    @computed()
+    get initialName(): string {
+      const defaultInitialName = ((this as any)['username'] as string).charAt(0).toUpperCase()
+
+      if (!this.fullName) return defaultInitialName
+
+      const names = this.fullName.split(' ').filter(Boolean)
+
+      if (names.length === 0) return defaultInitialName
+      if (names.length === 1) return names[0].charAt(0).toUpperCase()
+
+      const firstInitialName = names[0].charAt(0).toUpperCase()
+      const lastInitialName = names[names.length - 1].charAt(0).toUpperCase()
+
+      return firstInitialName + lastInitialName
+    }
+
+    @computed()
+    get age(): number | null {
+      const dob: DateTime | null = (this as any)['dob']
+
+      if (!dob) return null
+
+      const age = DateTime.now().diff(dob, ['years', 'months', 'days']).toObject()
+
+      return age.years || null
+    }
+  }
   return BaseClass
 }

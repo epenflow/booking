@@ -1,3 +1,4 @@
+import EInvalidTokenException from '#exceptions/e_invalid_token_exception'
 import DbTokensProvider, { NormalizeDbTokensColumn } from '#models/provider/db_tokens_provider'
 import { AccessToken, DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import emitter from '@adonisjs/core/services/emitter'
@@ -105,7 +106,7 @@ export function WithUserCredentials<Model extends NormalizeConstructor<typeof Ba
       const data = await this.tokens.verify(token, type)
 
       if (!data || data.isExpires) {
-        throw new Error('Invalid token provided or expired')
+        throw new EInvalidTokenException()
       }
 
       return this.query().where({ id: data.dbRow.tokenableId }).limit(1).firstOrFail()
@@ -174,19 +175,21 @@ export function WithUserComputedProperties<Model extends NormalizeConstructor<ty
 
     @computed()
     get initialName(): string {
-      const defaultInitialName = ((this as any)['username'] as string).charAt(0).toUpperCase()
+      const defaultName = ((this as any)['username'] as string).charAt(0).toUpperCase()
 
-      if (!this.fullName) return defaultInitialName
+      if (!this.fullName) return defaultName
 
       const names = this.fullName.split(' ').filter(Boolean)
 
-      if (names.length === 0) return defaultInitialName
-      if (names.length === 1) return names[0].charAt(0).toUpperCase()
+      if (names.length === 0) return defaultName
 
-      const firstInitialName = names[0].charAt(0).toUpperCase()
-      const lastInitialName = names[names.length - 1].charAt(0).toUpperCase()
+      const firstName = names[0].charAt(0).toUpperCase()
 
-      return firstInitialName + lastInitialName
+      if (names.length === 1) return firstName
+
+      const lastName = names[names.length - 1].charAt(0).toUpperCase()
+
+      return firstName + lastName
     }
 
     @computed()

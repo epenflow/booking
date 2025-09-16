@@ -81,7 +81,7 @@ test.group('User credentials mixins', (group) => {
 
     await assert.rejects(
       () => User.verifyEmail('invalid-token'),
-      'Invalid token provided or expired'
+      'The token provided is invalid or expired'
     )
   })
 })
